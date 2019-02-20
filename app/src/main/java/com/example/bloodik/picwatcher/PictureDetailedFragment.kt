@@ -23,9 +23,9 @@ class PictureDetailedFragment : Fragment() {
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.content_picture_detailed, container, false).apply { ->
-        picture?.downloadFull(image)
-        author.text = picture?.author?.name
+    ): View? = inflater.inflate(R.layout.content_picture_detailed, container, false).apply {
+        picture?.downloadFull(context)
+        author.text = picture?.author
         description.text = picture?.description
     }
 
