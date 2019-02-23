@@ -10,9 +10,9 @@ import kotlinx.android.synthetic.main.pictures_list.view.*
 class PicturesListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
         val view = inflater.inflate(R.layout.pictures_list, container, false)
-
+        createPics(context!!, 20)
         view.pictures_list.layoutManager = LinearLayoutManager(context)
-        view.pictures_list.adapter = PicAdapter(context!!, createPics(context!!, 2)) {
+        view.pictures_list.adapter = PicAdapter(context!!) {
             if (activity?.findViewById<View>(R.id.fragment_detail) != null) {
                 val transaction = activity!!.supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragment_detail, PictureDetailedFragment.newInstance(it))

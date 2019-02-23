@@ -8,14 +8,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import kotlinx.android.synthetic.main.content_picture_detailed.*
 import kotlinx.android.synthetic.main.content_picture_detailed.view.*
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.net.URL
-import java.util.concurrent.TimeUnit
-import javax.xml.datatype.DatatypeConstants.SECONDS
-
+import java.net.URLConnection
 
 
 /**
@@ -35,10 +33,10 @@ class PictureDetailedFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.content_picture_detailed, container, false).apply {
-        val full = DownloadFull()
-        full.execute(picture?.links!!.full)
-        author.text = picture?.author
-        description.text = picture?.description
+        author.text = picture!!.author
+        description.text = picture!!.description
+        val full = DownloadFull(picture!!)
+        full.execute()
     }
 
     companion object {
@@ -51,25 +49,35 @@ class PictureDetailedFragment : Fragment() {
                 }
     }
 
-    internal inner class DownloadFull : AsyncTask<String, Unit, ByteArray>() {
+    internal inner class DownloadFull(val pic: Picture) : AsyncTask<Unit, Unit, Unit>() {
 
-        override fun doInBackground(vararg p0: String?): ByteArray {
-            val url = URL(p0[0])
-            val data = url.openStream()
-            val res = data.readBytes()
-            data.close()
-            return res
+        override fun doInBackground(vararg p0: Unit?) {
+            if (pic.full == null) {
+                if (pic.links.full == null) {
+                    pic.full = pic.small
+                    return
+                }
+                var url = URL(pic.links.full).openConnection()
+                if (url.contentLength > 2 * 1024 * 1024) {
+                    url = URL(pic.links.regular).openConnection()
+                    if (url.contentLength > 2 * 1024 * 1024)
+                        url = URL(pic.links.small).openConnection()
+                }
+                pic.full = (url.content as InputStream).readBytes()
+                for (i in 0 until pictures!!.size) {
+                    if (pictures!![i].id == pic.id) {
+                        pictures!![i] = pic
+                        break
+                    }
+                }
+            }
         }
 
-        override fun onPostExecute(result: ByteArray?) {
+        override fun onPostExecute(result: Unit) {
             super.onPostExecute(result)
-            if (result != null) {
-                val bm = BitmapFactory.decodeByteArray(result, 0, result.size)
-                var scale: Int = 1
-                while (result.size / scale > 5*1024*1024) scale *= 2
-                val scaled = Bitmap.createScaledBitmap(bm, bm.width / scale, bm.height / scale, false)
-                image.setImageBitmap(scaled)
-            }
+
+            val bm = BitmapFactory.decodeByteArray(pic.full, 0, pic.full!!.size)
+            image.setImageBitmap(bm)
         }
     }
 }
