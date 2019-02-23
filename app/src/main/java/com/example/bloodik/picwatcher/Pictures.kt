@@ -64,7 +64,6 @@ class PicAdapter(context: Context, val onItemClicked: (Picture) -> Unit) :
 private class Unsplash {
     companion object {
         val access = "89014e7699c564cd4cace57b2819a555b8bedef36c71c356a4825fb83f3a9806"
-        //val access = "72fb6fd978959ab637fcc4d9f89a055b8849aad66c28a9aace5c376bbee3883c"
 
         fun getRandomPicture(pic: Picture, index: Int, ad: PicAdapter) {
             val url = "https://api.unsplash.com/photos/random?client_id=$access"
