@@ -1,6 +1,5 @@
 package com.example.bloodik.picwatcher
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.support.v4.app.Fragment
@@ -10,10 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.content_picture_detailed.*
 import kotlinx.android.synthetic.main.content_picture_detailed.view.*
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URL
-import java.net.URLConnection
 
 
 /**
