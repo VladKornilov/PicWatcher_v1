@@ -74,7 +74,8 @@ class PictureDetailedFragment : Fragment() {
             super.onPostExecute(result)
 
             val bm = BitmapFactory.decodeByteArray(pic.full, 0, pic.full!!.size)
-            image.setImageBitmap(bm)
+            if (image != null)
+                image.setImageBitmap(bm)
         }
     }
 }
